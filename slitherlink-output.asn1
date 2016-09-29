@@ -1,0 +1,26 @@
+-- OUTPUT FORMAT
+OutputBoard ::= SEQUENCE {
+  size INTEGER,
+  horizontalSegments SEQUENCE OF BOOLEAN,
+  verticalSegments SEQUENCE OF BOOLEAN
+}
+
+sample5x5 OutputBoard ::= {
+  size 5,
+  horizontalSegments {
+    TRUE,  TRUE,  TRUE,  TRUE,  TRUE,
+    TRUE,  TRUE,  TRUE,  FALSE, FALSE,
+    TRUE,  FALSE, TRUE,  FALSE, TRUE,
+    FALSE, TRUE,  FALSE, TRUE,  FALSE,
+    FALSE, TRUE,  FALSE, TRUE,  TRUE,
+    TRUE,  FALSE, TRUE,  TRUE,  TRUE
+  },
+  verticalSegments {
+    TRUE,  FALSE, TRUE,  TRUE,  TRUE,
+    FALSE, FALSE, TRUE,  FALSE, TRUE,
+    FALSE, FALSE, TRUE,  FALSE, TRUE,
+    FALSE, TRUE,  FALSE, TRUE,  FALSE,
+    FALSE, FALSE, TRUE,  FALSE, FALSE,
+    TRUE,  TRUE,  FALSE, FALSE, TRUE
+  }
+}

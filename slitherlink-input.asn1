@@ -1,0 +1,39 @@
+-- INPUT FORMAT
+Cell ::= CHOICE {
+  value INTEGER (0..4),
+  empty NULL
+}
+
+
+InputBoard ::= SEQUENCE {
+  size INTEGER,
+  cells SET OF Cell
+}
+
+-- SAMPLES IN INPUT FORMAT
+sample5 InputBoard ::= {
+  size 5,
+  cells {
+    -- could have left out "value" and "empty" here, but it leads to warnings
+    -- in the compiler, so we added them in to be safe.
+    empty NULL, empty NULL, empty NULL, value 1,    value 2,
+    value 2,    empty NULL, value 3,    empty NULL, empty NULL,
+    value 3,    value 3,    empty NULL, value 2,    empty NULL,
+    empty NULL, empty NULL, empty NULL, empty NULL, value 1,
+    empty NULL, value 3,    empty NULL, empty NULL, empty NULL
+  }
+}
+
+sample7 InputBoard ::= {
+  size 7,
+  cells {
+    -- keeping the value / empty here as well.
+    value 3,    empty NULL, empty NULL, value 2,    empty NULL, empty NULL, empty NULL,
+    value 1,    empty NULL, empty NULL, empty NULL, empty NULL, value 1,    value 2,
+    value 2,    empty NULL, empty NULL, value 2,    value 2,    empty NULL, value 2,
+    empty NULL, empty NULL, value 2,    empty NULL, value 1,    empty NULL, value 2,
+    empty NULL, value 2,    empty NULL, value 3,    empty NULL, empty NULL, value 2,
+    value 3,    empty NULL, empty NULL, value 3,    empty NULL, value 2,    empty NULL,
+    empty NULL, value 2,    value 1,    empty NULL, value 3,    value 3,    empty NULL
+  }
+}
