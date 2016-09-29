@@ -1,26 +1,55 @@
 -- OUTPUT FORMAT
 OutputBoard ::= SEQUENCE {
-  size INTEGER, -- assuming same width and height, as this is the case in the examples
+  -- assuming same width and height, as this is the case in the examples,
+  -- there will be "size" line segments per line, but "size+1" lines.
+  size INTEGER,
   horizontalSegments SEQUENCE OF BOOLEAN, -- rows, from left to right
   verticalSegments SEQUENCE OF BOOLEAN -- columns, from top to bottom
 }
 
-sample5x5 OutputBoard ::= {
-  size 5,
-  horizontalSegments {
-    TRUE,  TRUE,  TRUE,  TRUE,  TRUE,
-    TRUE,  TRUE,  TRUE,  FALSE, FALSE,
-    TRUE,  FALSE, TRUE,  FALSE, TRUE,
-    FALSE, TRUE,  FALSE, TRUE,  FALSE,
-    FALSE, TRUE,  FALSE, TRUE,  TRUE,
-    TRUE,  FALSE, TRUE,  TRUE,  TRUE
+OutputBoardFile ::= SEQUENCE OF OutputBoard
+
+sampleBoardFile OutputBoardFile ::= {
+  {
+    size 5,
+    horizontalSegments {
+      TRUE,  TRUE,  TRUE,  TRUE,  TRUE,
+      TRUE,  TRUE,  TRUE,  FALSE, FALSE,
+      TRUE,  FALSE, TRUE,  FALSE, TRUE,
+      FALSE, TRUE,  FALSE, TRUE,  FALSE,
+      FALSE, TRUE,  FALSE, TRUE,  TRUE,
+      TRUE,  FALSE, TRUE,  TRUE,  TRUE
+    },
+    verticalSegments {
+      TRUE,  FALSE, TRUE,  TRUE,  TRUE,
+      FALSE, FALSE, TRUE,  FALSE, TRUE,
+      FALSE, FALSE, TRUE,  FALSE, TRUE,
+      FALSE, TRUE,  FALSE, TRUE,  FALSE,
+      FALSE, FALSE, TRUE,  FALSE, FALSE,
+      TRUE,  TRUE,  FALSE, FALSE, TRUE
+    }
   },
-  verticalSegments {
-    TRUE,  FALSE, TRUE,  TRUE,  TRUE,
-    FALSE, FALSE, TRUE,  FALSE, TRUE,
-    FALSE, FALSE, TRUE,  FALSE, TRUE,
-    FALSE, TRUE,  FALSE, TRUE,  FALSE,
-    FALSE, FALSE, TRUE,  FALSE, FALSE,
-    TRUE,  TRUE,  FALSE, FALSE, TRUE
+  {
+    size 7,
+    horizontalSegments {
+      TRUE,  FALSE, TRUE,  TRUE,  TRUE,  FALSE, TRUE,
+      FALSE, TRUE,  FALSE, TRUE,  TRUE,  FALSE, FALSE,
+      FALSE, TRUE,  FALSE, TRUE,  FALSE, FALSE, FALSE,
+      FALSE, FALSE, TRUE,  FALSE, TRUE,  TRUE, FALSE,
+      FALSE, TRUE,  FALSE, TRUE,  FALSE, TRUE, TRUE,
+      TRUE,  FALSE, FALSE, TRUE,  FALSE, TRUE,  TRUE,
+      TRUE,  FALSE, FALSE, TRUE,  FALSE, TRUE,  FALSE,
+      TRUE,  TRUE,  FALSE, FALSE, TRUE,  FALSE, TRUE
+    },
+    verticalSegments {
+      TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  FALSE, TRUE,
+      TRUE,  FALSE, TRUE,  TRUE,  FALSE, TRUE,  FALSE,
+      TRUE,  FALSE, TRUE,  FALSE, TRUE,  TRUE,  TRUE,
+      FALSE, TRUE,  FALSE, TRUE,  FALSE, TRUE,  FALSE,
+      FALSE, FALSE, TRUE,  FALSE, TRUE,  FALSE, TRUE,
+      TRUE,  FALSE, FALSE, FALSE, TRUE,  FALSE, TRUE,
+      TRUE,  TRUE,  TRUE,  FALSE, FALSE, FALSE, TRUE,
+      TRUE,  TRUE,  TRUE,  TRUE,  FALSE, TRUE,  TRUE
+    }
   }
 }
