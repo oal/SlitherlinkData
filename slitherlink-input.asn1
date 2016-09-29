@@ -1,13 +1,13 @@
 -- INPUT FORMAT
 Cell ::= CHOICE {
-  value INTEGER (0..4),
-  empty NULL
+  value INTEGER (0..4), -- 4 would only ever occur on 1x1 boards, but it would be valid
+  empty NULL -- cell without a number (any number of sides)
 }
 
 
 InputBoard ::= SEQUENCE {
-  size INTEGER,
-  cells SET OF Cell
+  size INTEGER, -- assuming same width and height, as this is the case in the examples
+  cells SEQUENCE OF Cell -- use sequence to retain order
 }
 
 -- SAMPLES IN INPUT FORMAT

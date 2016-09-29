@@ -1,8 +1,8 @@
 -- OUTPUT FORMAT
 OutputBoard ::= SEQUENCE {
-  size INTEGER,
-  horizontalSegments SEQUENCE OF BOOLEAN,
-  verticalSegments SEQUENCE OF BOOLEAN
+  size INTEGER, -- assuming same width and height, as this is the case in the examples
+  horizontalSegments SEQUENCE OF BOOLEAN, -- rows, from left to right
+  verticalSegments SEQUENCE OF BOOLEAN -- columns, from top to bottom
 }
 
 sample5x5 OutputBoard ::= {
