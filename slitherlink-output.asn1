@@ -1,3 +1,4 @@
+-- TODO: Just use bit string?
 -- OUTPUT FORMAT
 OutputBoard ::= SEQUENCE {
   -- assuming same width and height, as this is the case in the examples,
