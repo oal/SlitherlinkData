@@ -1,0 +1,92 @@
+SORT cell
+OPS
+	empty: -> cell
+	number: nat -> cell
+
+SORT cellList
+OPS
+	newCL: cell cell cell cell cell cell -> cellList
+	getCell: cellList nat nat -> cell
+AXIOMS
+	(1) getCell(newCL(c, -, -, -, -, -), 0, 0) -> c
+	(2) getCell(newCL(-, c, -, -, -, -), 1, 0) -> c
+	(3) getCell(newCL(-, -, c, -, -, -), 2, 0) -> c
+	(4) getCell(newCL(-, -, -, c, -, -), 0, 1) -> c
+	(5) getCell(newCL(-, -, -, -, c, -), 1, 1) -> c
+	(6) getCell(newCL(-, -, -, -, -, c), 2, 1) -> c
+
+SORT segment
+OPS
+	enabled: -> segment
+	disabled -> segment
+	unknown -> segment
+	is-set?: segment -> bool
+AXIOMS
+	(1) is-set?(enabled) = True
+	(2) is-set?(disabled) = False
+	(3) is-set?(unknown) = False
+
+-- horizontal and vertical lines
+SORT hLine
+OPS
+	newHL: segment segment segment -> hLine
+	getHSeg: hLine nat -> segment
+AXIOMS
+	(1) getHSeg(newHL(s1, s2, s3), 0) -> s1
+	(2) getHSeg(newHL(s1, s2, s3), 1) -> s2
+	(3) getHSeg(newHL(s1, s2, s3), 2) -> s3
+
+SORT hLineList
+OPS
+	newHLL: hLine hLine hLine -> hLineList
+	getHLine: hLineList nat -> hLine
+AXIOMS
+	(1) getHLine(newHLL(h1, h2, h3), 0) -> h1
+	(2) getHLine(newHLL(h1, h2, h3), 1) -> h2
+	(3) getHLine(newHLL(h1, h2, h3), 2) -> h3
+
+SORT vLine
+OPS
+	newVL: segment segment -> vLine
+	getVSeg: hLine nat -> segment
+AXIOMS
+	(1) getVSeg(newVL(s1, s2), 0) -> s1
+	(2) getVSeg(newVL(s1, s2), 1) -> s2
+
+SORT vLineList
+OPS
+	newVLL: vLine vLine vLine vLine -> vLineList
+	getVLine: vLineList nat -> vLine
+AXIOMS
+	(1) getVLine(newVLL(v1, v2, v3, v4), 0) -> v1
+	(2) getVLine(newVLL(v1, v2, v3, v4), 1) -> v2
+	(3) getVLine(newVLL(v1, v2, v3, v4), 2) -> v3
+	(4) getVLine(newVLL(v1, v2, v3, v4), 3) -> v4
+
+-- board type
+SORT board
+OPS
+	createBoard: cellList hLineList vLineList -> board
+	is-top-set?: nat nat -> bool
+	is-right-set?: nat nat -> bool
+	is-bottom-set?: nat nat -> bool
+	is-left-set?: nat nat -> bool
+
+-- valid example 2
+createBoard(
+	newCL(
+		number(3), empty,     number(3),
+		empty,     number(3), empty
+	),
+	newHLL(
+		newHL(enabled,  unknown, enabled),
+		newHL(enabled,  unknown, enabled),
+		newHL(disabled, enabled, disabled),
+	),
+	newVLL(
+		newVL(unknown,  disabled),
+		newVL(disabled, unknown),
+		newVL(disabled, unknown),
+		newVL(enabled,  disabled),
+	)
+)
