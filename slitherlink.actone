@@ -5,15 +5,16 @@ OPS
 
 SORT cellList
 OPS
-	newCL: cell cell cell cell cell cell -> cellList
-	getCell: cellList nat nat -> cell
+	new-cl: cell cell cell cell cell cell -> cellList
+	get-cell: cellList nat nat -> cell
+FORALL c: cell
 AXIOMS
-	(1) getCell(newCL(c, -, -, -, -, -), 0, 0) -> c
-	(2) getCell(newCL(-, c, -, -, -, -), 1, 0) -> c
-	(3) getCell(newCL(-, -, c, -, -, -), 2, 0) -> c
-	(4) getCell(newCL(-, -, -, c, -, -), 0, 1) -> c
-	(5) getCell(newCL(-, -, -, -, c, -), 1, 1) -> c
-	(6) getCell(newCL(-, -, -, -, -, c), 2, 1) -> c
+	(1) get-cell(new-cl(c, _, _, _, _, -), 0, 0) -> c
+	(2) get-cell(new-cl(_, c, _, _, _, -), 1, 0) -> c
+	(3) get-cell(new-cl(_, _, c, _, _, -), 2, 0) -> c
+	(4) get-cell(new-cl(_, _, _, c, _, -), 0, 1) -> c
+	(5) get-cell(new-cl(_, _, _, _, c, -), 1, 1) -> c
+	(6) get-cell(new-cl(_, _, _, _, _, c), 2, 1) -> c
 
 SORT segment
 OPS
@@ -29,64 +30,105 @@ AXIOMS
 -- horizontal and vertical lines
 SORT hLine
 OPS
-	newHL: segment segment segment -> hLine
-	getHSeg: hLine nat -> segment
+	new-hl: segment segment segment -> hLine
+	get-hseg: hLine nat -> segment
+FORALL s: segment
 AXIOMS
-	(1) getHSeg(newHL(s1, s2, s3), 0) -> s1
-	(2) getHSeg(newHL(s1, s2, s3), 1) -> s2
-	(3) getHSeg(newHL(s1, s2, s3), 2) -> s3
+	(1) get-hseg(new-hl(s, _, _), 0) -> s
+	(2) get-hseg(new-hl(_, s, _), 1) -> s
+	(3) get-hseg(new-hl(_, _, s), 2) -> s
 
 SORT hLineList
 OPS
-	newHLL: hLine hLine hLine -> hLineList
-	getHLine: hLineList nat -> hLine
+	new-hll: hLine hLine hLine -> hLineList
+	get-hline: hLineList nat -> hLine
+FORALL h: hLine
 AXIOMS
-	(1) getHLine(newHLL(h1, h2, h3), 0) -> h1
-	(2) getHLine(newHLL(h1, h2, h3), 1) -> h2
-	(3) getHLine(newHLL(h1, h2, h3), 2) -> h3
+	(1) get-hline(new-hll(h, _, _), 0) -> h
+	(2) get-hline(new-hll(_, h, _), 1) -> h
+	(3) get-hline(new-hll(_, _, h), 2) -> h
 
 SORT vLine
 OPS
-	newVL: segment segment -> vLine
-	getVSeg: hLine nat -> segment
+	new-vl: segment segment -> vLine
+	get-vseg: hLine nat -> segment
+FORALL s: segment
 AXIOMS
-	(1) getVSeg(newVL(s1, s2), 0) -> s1
-	(2) getVSeg(newVL(s1, s2), 1) -> s2
+	(1) get-vseg(new-vl(s, _), 0) -> s
+	(2) get-vseg(new-vl(_, s), 1) -> s
 
 SORT vLineList
 OPS
-	newVLL: vLine vLine vLine vLine -> vLineList
-	getVLine: vLineList nat -> vLine
+	new-vl: vLine vLine vLine vLine -> vLineList
+	get-vline: vLineList nat -> vLine
+FORALL v: vLine
 AXIOMS
-	(1) getVLine(newVLL(v1, v2, v3, v4), 0) -> v1
-	(2) getVLine(newVLL(v1, v2, v3, v4), 1) -> v2
-	(3) getVLine(newVLL(v1, v2, v3, v4), 2) -> v3
-	(4) getVLine(newVLL(v1, v2, v3, v4), 3) -> v4
+	(1) get-vline(new-vl(v, _, _, _), 0) -> v
+	(2) get-vline(new-vl(_, v, _, _), 1) -> v
+	(3) get-vline(new-vl(_, _, v, _), 2) -> v
+	(4) get-vline(new-vl(_, _, _, v), 3) -> v
 
 -- board type
 SORT board
 OPS
 	createBoard: cellList hLineList vLineList -> board
-	is-top-set?: nat nat -> bool
-	is-right-set?: nat nat -> bool
-	is-bottom-set?: nat nat -> bool
-	is-left-set?: nat nat -> bool
+	get-cl: board -> cellList
+	get-hll: board -> hLineList
+	get-vll: board -> vLineList
+
+	get-top: nat nat -> segment
+	get-right: nat nat -> segment
+	get-bottom: nat nat -> segment
+	get-left: nat nat -> segment
+FORALL cb: createBoard
+AXIOMS
+	get-cl -> createBoard(cl, _, _) -> cl
+	get-hll -> createBoard(_, hll, _) -> hll
+	get-vll -> createBoard(_, _, vll) -> vll
+
+	(1) get-top(0, 0) -> get-hseg(get-hline(get-hll(cb), 0), 0)
+	(2) get-top(0, 1) -> get-hseg(get-hline(get-hll(cb), 1), 0)
+	(3) get-top(1, 0) -> get-hseg(get-hline(get-hll(cb), 0), 1)
+	(4) get-top(1, 1) -> get-hseg(get-hline(get-hll(cb), 1), 1)
+	(5) get-top(2, 0) -> get-hseg(get-hline(get-hll(cb), 0), 2)
+	(6) get-top(2, 1) -> get-hseg(get-hline(get-hll(cb), 1), 2)
+
+	(7) get-bottom(0, 0) -> get-top(0, 1)
+	(8) get-bottom(1, 0) -> get-top(1, 1)
+	(9) get-bottom(2, 0) -> get-top(2, 1)
+	(10) get-bottom(0, 2) -> get-hseg(get-hline(get-hll(cb), 2), 0)
+	(11) get-bottom(1, 2) -> get-hseg(get-hline(get-hll(cb), 2), 1)
+	(12) get-bottom(2, 2) -> get-hseg(get-hline(get-hll(cb), 2), 2)
+
+	(13) get-left(0, 0) -> get-vseg(get-vline(get-vll(cb), 0), 0)
+	(14) get-left(0, 1) -> get-vseg(get-vline(get-vll(cb), 0), 1)
+	(15) get-left(1, 0) -> get-vseg(get-vline(get-vll(cb), 1), 0)
+	(16) get-left(1, 1) -> get-vseg(get-vline(get-vll(cb), 1), 1)
+	(17) get-left(2, 0) -> get-vseg(get-vline(get-vll(cb), 2), 0)
+	(18) get-left(2, 1) -> get-vseg(get-vline(get-vll(cb), 2), 1)
+	
+	(19) get-right(0, 0) -> get-left(1, 0)
+	(20) get-right(0, 1) -> get-left(1, 1)
+	(21) get-right(1, 0) -> get-left(2, 0)
+	(22) get-right(1, 1) -> get-left(2, 1)
+	(23) get-right(2, 0) -> get-vseg(get-vline(get-vll(cb), 3), 0)
+	(24) get-right(2, 1) -> get-vseg(get-vline(get-vll(cb), 3), 1)
 
 -- valid example 2
 createBoard(
-	newCL(
+	new-cl(
 		number(3), empty,     number(3),
 		empty,     number(3), empty
 	),
-	newHLL(
-		newHL(enabled,  unknown, enabled),
-		newHL(enabled,  unknown, enabled),
-		newHL(disabled, enabled, disabled),
+	new-hll(
+		new-hl(enabled,  unknown, enabled),
+		new-hl(enabled,  unknown, enabled),
+		new-hl(disabled, enabled, disabled),
 	),
-	newVLL(
-		newVL(unknown,  disabled),
-		newVL(disabled, unknown),
-		newVL(disabled, unknown),
-		newVL(enabled,  disabled),
+	new-vl(
+		new-vl(unknown,  disabled),
+		new-vl(disabled, unknown),
+		new-vl(disabled, unknown),
+		new-vl(enabled,  disabled),
 	)
 )
