@@ -1,0 +1,55 @@
+-- OUTPUT FORMAT
+OutputBoard ::= SEQUENCE {
+  -- Assuming same width and height, as this is the case in the examples,
+  -- there will be "size" line segments per line, but "size+1" lines.
+  size INTEGER,
+  horizontalSegments BIT STRING, -- Rows, from left to right
+  verticalSegments BIT STRING -- Columns, from top to bottom
+}
+
+OutputBoardFile ::= SEQUENCE OF OutputBoard
+
+sampleBoardFile OutputBoardFile ::= {
+  {
+    size 5, -- [size] line segments per line, and [size+1] lines. Added whitespace below to show more clearly
+    horizontalSegments '
+      11111
+      11100
+      10101
+      01010
+      01011
+      10111
+    'B,
+    verticalSegments '
+      10111
+      00101
+      00101
+      01010
+      00100
+      11001
+    'B
+  },
+  {
+    size 7,
+    horizontalSegments '
+      1011101
+      0101100
+      0101000
+      0010110
+      0101011
+      1001011
+      1001010
+      1100101
+    'B,
+    verticalSegments '
+      1111101
+      1011010
+      1010111
+      0101010
+      0010101
+      1000101
+      1110001
+      1111011
+    'B
+  }
+}

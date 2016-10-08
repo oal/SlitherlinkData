@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OutputBoardFile>
+  <OutputBoard>
+    <size>5</size>
+    <horizontalSegments>11111111 00101010 10100101 110111</horizontalSegments>
+    <verticalSegments>10111001 01001010 10100010 011001</verticalSegments>
+  </OutputBoard>
+  <OutputBoard>
+    <size>7</size>
+    <horizontalSegments>
+      10111010 10110001 01000001 01100101 01110010 11100101 01100101
+    </horizontalSegments>
+    <verticalSegments>
+      11111011 01101010 10111010 10100010 10110001 01111000 11111011
+    </verticalSegments>
+  </OutputBoard>
+</OutputBoardFile>
