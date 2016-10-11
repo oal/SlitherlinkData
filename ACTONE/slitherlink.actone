@@ -76,43 +76,73 @@ OPS
 	get-hll: board -> hLineList
 	get-vll: board -> vLineList
 
-	get-top: nat nat -> segment
-	get-right: nat nat -> segment
-	get-bottom: nat nat -> segment
-	get-left: nat nat -> segment
+	get-top: board nat nat -> segment
+	get-right: board nat nat -> segment
+	get-bottom: board nat nat -> segment
+	get-left: board nat nat -> segment
+
+	cell-sides-valid?: board nat nat -> bool
+	all-cell-sides-valid?: board -> bool
+
 FORALL cb: createBoard
+			 x: nat
+			 y: nat
 AXIOMS
-	(1) get-cl -> createBoard(cl, _, _) -> cl
-	(2) get-hll -> createBoard(_, hll, _) -> hll
-	(3) get-vll -> createBoard(_, _, vll) -> vll
+	(1) get-cl(createBoard(cl, _, _)) -> cl
+	(2) get-hll(createBoard(_, hll, _)) -> hll
+	(3) get-vll(createBoard(_, _, vll)) -> vll
 
-	(4) get-top(0, 0) -> get-hseg(get-hline(get-hll(cb), 0), 0)
-	(5) get-top(0, 1) -> get-hseg(get-hline(get-hll(cb), 1), 0)
-	(6) get-top(1, 0) -> get-hseg(get-hline(get-hll(cb), 0), 1)
-	(7) get-top(1, 1) -> get-hseg(get-hline(get-hll(cb), 1), 1)
-	(8) get-top(2, 0) -> get-hseg(get-hline(get-hll(cb), 0), 2)
-	(9) get-top(2, 1) -> get-hseg(get-hline(get-hll(cb), 1), 2)
+	(4) get-top(cb, 0, 0) -> get-hseg(get-hline(get-hll(cb), 0), 0)
+	(5) get-top(cb, 0, 1) -> get-hseg(get-hline(get-hll(cb), 1), 0)
+	(6) get-top(cb, 1, 0) -> get-hseg(get-hline(get-hll(cb), 0), 1)
+	(7) get-top(cb, 1, 1) -> get-hseg(get-hline(get-hll(cb), 1), 1)
+	(8) get-top(cb, 2, 0) -> get-hseg(get-hline(get-hll(cb), 0), 2)
+	(9) get-top(cb, 2, 1) -> get-hseg(get-hline(get-hll(cb), 1), 2)
 
-	(10) get-bottom(0, 0) -> get-top(0, 1)
-	(11) get-bottom(1, 0) -> get-top(1, 1)
-	(12) get-bottom(2, 0) -> get-top(2, 1)
-	(13) get-bottom(0, 2) -> get-hseg(get-hline(get-hll(cb), 2), 0)
-	(14) get-bottom(1, 2) -> get-hseg(get-hline(get-hll(cb), 2), 1)
-	(15) get-bottom(2, 2) -> get-hseg(get-hline(get-hll(cb), 2), 2)
+	(10) get-bottom(cb, 0, 0) -> get-top(0, 1)
+	(11) get-bottom(cb, 1, 0) -> get-top(1, 1)
+	(12) get-bottom(cb, 2, 0) -> get-top(2, 1)
+	(13) get-bottom(cb, 0, 2) -> get-hseg(get-hline(get-hll(cb), 2), 0)
+	(14) get-bottom(cb, 1, 2) -> get-hseg(get-hline(get-hll(cb), 2), 1)
+	(15) get-bottom(cb, 2, 2) -> get-hseg(get-hline(get-hll(cb), 2), 2)
 
-	(16) get-left(0, 0) -> get-vseg(get-vline(get-vll(cb), 0), 0)
-	(17) get-left(0, 1) -> get-vseg(get-vline(get-vll(cb), 0), 1)
-	(18) get-left(1, 0) -> get-vseg(get-vline(get-vll(cb), 1), 0)
-	(19) get-left(1, 1) -> get-vseg(get-vline(get-vll(cb), 1), 1)
-	(20) get-left(2, 0) -> get-vseg(get-vline(get-vll(cb), 2), 0)
-	(21) get-left(2, 1) -> get-vseg(get-vline(get-vll(cb), 2), 1)
+	(16) get-left(cb, 0, 0) -> get-vseg(get-vline(get-vll(cb), 0), 0)
+	(17) get-left(cb, 0, 1) -> get-vseg(get-vline(get-vll(cb), 0), 1)
+	(18) get-left(cb, 1, 0) -> get-vseg(get-vline(get-vll(cb), 1), 0)
+	(19) get-left(cb, 1, 1) -> get-vseg(get-vline(get-vll(cb), 1), 1)
+	(20) get-left(cb, 2, 0) -> get-vseg(get-vline(get-vll(cb), 2), 0)
+	(21) get-left(cb, 2, 1) -> get-vseg(get-vline(get-vll(cb), 2), 1)
 
-	(22) get-right(0, 0) -> get-left(1, 0)
-	(23) get-right(0, 1) -> get-left(1, 1)
-	(24) get-right(1, 0) -> get-left(2, 0)
-	(25) get-right(1, 1) -> get-left(2, 1)
-	(26) get-right(2, 0) -> get-vseg(get-vline(get-vll(cb), 3), 0)
-	(27) get-right(2, 1) -> get-vseg(get-vline(get-vll(cb), 3), 1)
+	(22) get-right(cb, 0, 0) -> get-left(1, 0)
+	(23) get-right(cb, 0, 1) -> get-left(1, 1)
+	(24) get-right(cb, 1, 0) -> get-left(2, 0)
+	(25) get-right(cb, 1, 1) -> get-left(2, 1)
+	(26) get-right(cb, 2, 0) -> get-vseg(get-vline(get-vll(cb), 3), 0)
+	(27) get-right(cb, 2, 1) -> get-vseg(get-vline(get-vll(cb), 3), 1)
+
+	(28) cell-sides-valid?(createBoard(cl, hll, vll), x, y) ->
+		IF x < 0 || y < 0 || x > 2 || y > 1 THEN false
+		ELSE IF get-cell(cl, x, y) == 0 THEN
+			get-top(x, y) != enabled AND get-right(x, y) != enabled AND get-bottom(x, y) != enabled AND get-left(x, y) != enabled
+		ELSE IF get-cell(cl, x, y) == 1 THEN
+			(get-top(x, y) != disabled AND get-right(x, y) != enabled AND get-bottom(x, y) != enabled AND get-left(x, y) != enabled) OR
+			(get-top(x, y) != enabled AND get-right(x, y) != disabled AND get-bottom(x, y) != enabled AND get-left(x, y) != enabled) OR
+			(get-top(x, y) != enabled AND get-right(x, y) != enabled AND get-bottom(x, y) != disabled AND get-left(x, y) != enabled) OR
+			(get-top(x, y) != enabled AND get-right(x, y) != enabled AND get-bottom(x, y) != enabled AND get-left(x, y) != disabled)
+		ELSE IF get-cell(cl, x, y) == 2 THEN
+			-- TODO
+		ELSE IF get-cell(cl, x, y) == 3 THEN
+		  -- TODO
+		ELSE IF get-cell(cl, x, y) == 4 THEN
+			get-top(x, y) != disabled AND get-right(x, y) != disabled AND get-bottom(x, y) != disabled AND get-left(x, y) != disabled
+
+	(29) cell-sides-valid?(cb) ->
+		cell-sides-valid?(cb, 0, 0) AND cell-sides-valid?(cb, 1, 0) AND cell-sides-valid?(cb, 2, 0) AND
+		all-cell-sides-valid?(cb, 0, 1) AND cell-sides-valid?(cb, 1, 1) AND cell-sides-valid?(cb, 2, 1)
+
+	-- TODO: Rule based checks (3 in corner etc)
+	-- TODO: Final check that runs all-cell-sides-valid? + rule based checks as is-valid? for the whole board.
+
 
 -- valid example 2
 createBoard(
