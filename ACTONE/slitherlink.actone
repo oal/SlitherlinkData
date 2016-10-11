@@ -85,8 +85,8 @@ OPS
 	all-cell-sides-valid?: board -> bool
 
 FORALL cb: createBoard
-			 x: nat
-			 y: nat
+       x: nat
+       y: nat
 AXIOMS
 	(1) get-cl(createBoard(cl, _, _)) -> cl
 	(2) get-hll(createBoard(_, hll, _)) -> hll
@@ -120,25 +120,25 @@ AXIOMS
 	(26) get-right(cb, 2, 0) -> get-vseg(get-vline(get-vll(cb), 3), 0)
 	(27) get-right(cb, 2, 1) -> get-vseg(get-vline(get-vll(cb), 3), 1)
 
-	(28) cell-sides-valid?(createBoard(cl, hll, vll), x, y) ->
+	(28) cell-sides-valid?(cb, x, y) ->
 		IF x < 0 || y < 0 || x > 2 || y > 1 THEN false
 		ELSE IF get-cell(cl, x, y) == 0 THEN
-			get-top(x, y) != enabled AND get-right(x, y) != enabled AND get-bottom(x, y) != enabled AND get-left(x, y) != enabled
+			get-top(cb, x, y) != enabled AND get-right(cb, x, y) != enabled AND get-bottom(cb, x, y) != enabled AND get-left(cb, x, y) != enabled
 		ELSE IF get-cell(cl, x, y) == 1 THEN
-			(get-top(x, y) != disabled AND get-right(x, y) != enabled AND get-bottom(x, y) != enabled AND get-left(x, y) != enabled) OR
-			(get-top(x, y) != enabled AND get-right(x, y) != disabled AND get-bottom(x, y) != enabled AND get-left(x, y) != enabled) OR
-			(get-top(x, y) != enabled AND get-right(x, y) != enabled AND get-bottom(x, y) != disabled AND get-left(x, y) != enabled) OR
-			(get-top(x, y) != enabled AND get-right(x, y) != enabled AND get-bottom(x, y) != enabled AND get-left(x, y) != disabled)
+			(get-top(cb, x, y) != disabled AND get-right(cb, x, y) != enabled AND get-bottom(cb, x, y) != enabled AND get-left(cb, x, y) != enabled) OR
+			(get-top(cb, x, y) != enabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != enabled AND get-left(cb, x, y) != enabled) OR
+			(get-top(cb, x, y) != enabled AND get-right(cb, x, y) != enabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != enabled) OR
+			(get-top(cb, x, y) != enabled AND get-right(cb, x, y) != enabled AND get-bottom(cb, x, y) != enabled AND get-left(cb, x, y) != disabled)
 		ELSE IF get-cell(cl, x, y) == 2 THEN
 			-- TODO
 		ELSE IF get-cell(cl, x, y) == 3 THEN
-		  -- TODO
+			-- TODO
 		ELSE IF get-cell(cl, x, y) == 4 THEN
-			get-top(x, y) != disabled AND get-right(x, y) != disabled AND get-bottom(x, y) != disabled AND get-left(x, y) != disabled
+			get-top(cb, x, y) != disabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != disabled
 
-	(29) cell-sides-valid?(cb) ->
+	(29) all-cell-sides-valid?(cb) ->
 		cell-sides-valid?(cb, 0, 0) AND cell-sides-valid?(cb, 1, 0) AND cell-sides-valid?(cb, 2, 0) AND
-		all-cell-sides-valid?(cb, 0, 1) AND cell-sides-valid?(cb, 1, 1) AND cell-sides-valid?(cb, 2, 1)
+		cell-sides-valid?(cb, 0, 1) AND cell-sides-valid?(cb, 1, 1) AND cell-sides-valid?(cb, 2, 1)
 
 	-- TODO: Rule based checks (3 in corner etc)
 	-- TODO: Final check that runs all-cell-sides-valid? + rule based checks as is-valid? for the whole board.
