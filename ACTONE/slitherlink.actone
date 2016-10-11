@@ -21,11 +21,7 @@ OPS
 	enabled: -> segment
 	disabled -> segment
 	unknown -> segment
-	is-set?: segment -> bool
-AXIOMS
-	(1) is-set?(enabled) = True
-	(2) is-set?(disabled) = False
-	(3) is-set?(unknown) = False
+
 
 -- horizontal and vertical lines
 SORT hLine
@@ -68,6 +64,7 @@ AXIOMS
 	(3) get-vline(new-vl(_, _, v, _), 2) -> v
 	(4) get-vline(new-vl(_, _, _, v), 3) -> v
 
+
 -- board type
 SORT board
 OPS
@@ -83,6 +80,7 @@ OPS
 
 	cell-sides-valid?: board nat nat -> bool
 	all-cell-sides-valid?: board -> bool
+	is-valid?: board -> bool
 
 FORALL cb: createBoard
        x: nat
@@ -100,11 +98,11 @@ AXIOMS
 	(9) get-top(cb, 2, 1) -> get-hseg(get-hline(get-hll(cb), 1), 2)
 
 	(10) get-bottom(cb, 0, 0) -> get-top(0, 1)
-	(11) get-bottom(cb, 1, 0) -> get-top(1, 1)
-	(12) get-bottom(cb, 2, 0) -> get-top(2, 1)
-	(13) get-bottom(cb, 0, 2) -> get-hseg(get-hline(get-hll(cb), 2), 0)
-	(14) get-bottom(cb, 1, 2) -> get-hseg(get-hline(get-hll(cb), 2), 1)
-	(15) get-bottom(cb, 2, 2) -> get-hseg(get-hline(get-hll(cb), 2), 2)
+	(11) get-bottom(cb, 0, 1) -> get-hseg(get-hline(get-hll(cb), 2), 0)
+	(12) get-bottom(cb, 1, 0) -> get-top(1, 1)
+	(13) get-bottom(cb, 1, 1) -> get-hseg(get-hline(get-hll(cb), 2), 1)
+	(14) get-bottom(cb, 2, 0) -> get-top(2, 1)
+	(15) get-bottom(cb, 2, 1) -> get-hseg(get-hline(get-hll(cb), 2), 2)
 
 	(16) get-left(cb, 0, 0) -> get-vseg(get-vline(get-vll(cb), 0), 0)
 	(17) get-left(cb, 0, 1) -> get-vseg(get-vline(get-vll(cb), 0), 1)
@@ -132,7 +130,10 @@ AXIOMS
 		ELSE IF get-cell(cl, x, y) == 2 THEN
 			-- TODO
 		ELSE IF get-cell(cl, x, y) == 3 THEN
-			-- TODO
+			(get-top(cb, x, y) != enabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != disabled) OR
+			(get-top(cb, x, y) != disabled AND get-right(cb, x, y) != enabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != disabled) OR
+			(get-top(cb, x, y) != disabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != enabled AND get-left(cb, x, y) != disabled) OR
+			(get-top(cb, x, y) != disabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != enabled)
 		ELSE IF get-cell(cl, x, y) == 4 THEN
 			get-top(cb, x, y) != disabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != disabled
 
@@ -140,11 +141,20 @@ AXIOMS
 		cell-sides-valid?(cb, 0, 0) AND cell-sides-valid?(cb, 1, 0) AND cell-sides-valid?(cb, 2, 0) AND
 		cell-sides-valid?(cb, 0, 1) AND cell-sides-valid?(cb, 1, 1) AND cell-sides-valid?(cb, 2, 1)
 
-	-- TODO: Rule based checks (3 in corner etc)
+	(30) threes-corners-valid?(cb) ->
+		(get-cell(get-cl(cb), 0, 0) != number(3) OR -- TODO: check sides --) AND
+		(get-cell(get-cl(cb), 2, 0) != number(3) OR -- TODO: check sides --) AND
+		(get-cell(get-cl(cb), 0, 1) != number(3) OR -- TODO: check sides --) AND
+		(get-cell(get-cl(cb), 2, 1) != number(3) OR -- TODO: check sides --)
+
+	-- TODO: Twos in corners rules?
+
 	-- TODO: Final check that runs all-cell-sides-valid? + rule based checks as is-valid? for the whole board.
+	(31) is-valid?(cb) ->
+		all-cell-sides-valid?(cb)
 
 
--- valid example 2
+-- Valid example 2 for reference
 createBoard(
 	new-cl(
 		number(3), empty,     number(3),
