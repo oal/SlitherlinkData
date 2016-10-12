@@ -1,12 +1,51 @@
+-- creating simple sorts so we do not have to use nat, and therefore avoid
+-- constructors / accessors below being called with out of bounds parameters
+SORT xs
+OPS
+	-- constructors
+	0: -> xs
+	1: -> xs
+	2: -> xs
+
+-- because there are n+1 lines on a board of size n
+SORT xs-line
+OPS
+	-- constructors
+	0: -> xs-line
+	1: -> xs-line
+	2: -> xs-line
+	3: -> xs-line
+
+SORT ys
+OPS
+	-- constructors
+	0: -> ys
+	1: -> ys
+
+-- because there are n+1 lines on a board of size n
+SORT ys-line
+OPS
+	-- constructors
+	0: -> ys-line
+	1: -> ys-line
+	2: -> ys-line
+
 SORT cell
 OPS
+	-- constructors
 	empty: -> cell
-	number: nat -> cell
+	0: -> cell
+	1: -> cell
+	2: -> cell
+	3: -> cell
 
+-- board related data structures
 SORT cellList
 OPS
+	-- constructors
 	new-cl: cell cell cell cell cell cell -> cellList
-	get-cell: cellList nat nat -> cell
+	-- accessors
+	get-cell: cellList xs ys -> cell
 FORALL c: cell
 AXIOMS
 	(1) get-cell(new-cl(c, _, _, _, _, _), 0, 0) -> c
@@ -16,18 +55,27 @@ AXIOMS
 	(5) get-cell(new-cl(_, _, _, _, c, _), 1, 1) -> c
 	(6) get-cell(new-cl(_, _, _, _, _, c), 2, 1) -> c
 
+
 SORT segment
 OPS
+	-- constructors
 	enabled: -> segment
-	disabled -> segment
-	unknown -> segment
+	disabled: -> segment
+	unknown: -> segment
+	-- accessors
+	count1: segment -> nat
+FORALL s: segment
+AXIOMS
+	(1) count1(s) -> IF s == enabled THEN 1 ELSE 0
 
 
 -- horizontal and vertical lines
 SORT hLine
 OPS
+	-- constructors
 	new-hl: segment segment segment -> hLine
-	get-hseg: hLine nat -> segment
+	-- accessors
+	get-hseg: hLine xs -> segment
 FORALL s: segment
 AXIOMS
 	(1) get-hseg(new-hl(s, _, _), 0) -> s
@@ -36,8 +84,10 @@ AXIOMS
 
 SORT hLineList
 OPS
+	-- constructors
 	new-hll: hLine hLine hLine -> hLineList
-	get-hline: hLineList nat -> hLine
+	-- accessors
+	get-hline: hLineList ys-line -> hLine
 FORALL h: hLine
 AXIOMS
 	(1) get-hline(new-hll(h, _, _), 0) -> h
@@ -46,8 +96,10 @@ AXIOMS
 
 SORT vLine
 OPS
+	-- constructors
 	new-vl: segment segment -> vLine
-	get-vseg: hLine nat -> segment
+	-- accessors
+	get-vseg: vLine ys -> segment
 FORALL s: segment
 AXIOMS
 	(1) get-vseg(new-vl(s, _), 0) -> s
@@ -55,8 +107,10 @@ AXIOMS
 
 SORT vLineList
 OPS
+	-- constructors
 	new-vl: vLine vLine vLine vLine -> vLineList
-	get-vline: vLineList nat -> vLine
+	-- accessors
+	get-vline: vLineList xs-line -> vLine
 FORALL v: vLine
 AXIOMS
 	(1) get-vline(new-vl(v, _, _, _), 0) -> v
@@ -68,23 +122,31 @@ AXIOMS
 -- board type
 SORT board
 OPS
+	-- constructors
 	createBoard: cellList hLineList vLineList -> board
+	-- accessors
 	get-cl: board -> cellList
 	get-hll: board -> hLineList
 	get-vll: board -> vLineList
 
-	get-top: board nat nat -> segment
-	get-right: board nat nat -> segment
-	get-bottom: board nat nat -> segment
-	get-left: board nat nat -> segment
+	get-top: board xs ys -> segment
+	get-right: board xs ys -> segment
+	get-bottom: board xs ys -> segment
+	get-left: board xs ys -> segment
 
-	cell-sides-valid?: board nat nat -> bool
+	count-sides: board xs ys -> nat
+
+	cell-sides-valid?: board xs ys -> bool
 	all-cell-sides-valid?: board -> bool
 	is-valid?: board -> bool
 
 FORALL cb: createBoard
-       x: nat
-       y: nat
+       x: xs
+       y: ys
+			 s1: segment
+			 s2: segment
+			 s3: segment
+			 s4: segment
 AXIOMS
 	(1) get-cl(createBoard(cl, _, _)) -> cl
 	(2) get-hll(createBoard(_, hll, _)) -> hll
@@ -118,57 +180,43 @@ AXIOMS
 	(26) get-right(cb, 2, 0) -> get-vseg(get-vline(get-vll(cb), 3), 0)
 	(27) get-right(cb, 2, 1) -> get-vseg(get-vline(get-vll(cb), 3), 1)
 
-	(28) cell-sides-valid?(cb, x, y) ->
-		IF x < 0 || y < 0 || x > 2 || y > 1 THEN false
-		ELSE IF get-cell(cl, x, y) == 0 THEN
-			get-top(cb, x, y) != enabled AND get-right(cb, x, y) != enabled AND get-bottom(cb, x, y) != enabled AND get-left(cb, x, y) != enabled
-		ELSE IF get-cell(cl, x, y) == 1 THEN
-			(get-top(cb, x, y) != disabled AND get-right(cb, x, y) != enabled AND get-bottom(cb, x, y) != enabled AND get-left(cb, x, y) != enabled) OR
-			(get-top(cb, x, y) != enabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != enabled AND get-left(cb, x, y) != enabled) OR
-			(get-top(cb, x, y) != enabled AND get-right(cb, x, y) != enabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != enabled) OR
-			(get-top(cb, x, y) != enabled AND get-right(cb, x, y) != enabled AND get-bottom(cb, x, y) != enabled AND get-left(cb, x, y) != disabled)
-		ELSE IF get-cell(cl, x, y) == 2 THEN
-			-- TODO
-		ELSE IF get-cell(cl, x, y) == 3 THEN
-			(get-top(cb, x, y) != enabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != disabled) OR
-			(get-top(cb, x, y) != disabled AND get-right(cb, x, y) != enabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != disabled) OR
-			(get-top(cb, x, y) != disabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != enabled AND get-left(cb, x, y) != disabled) OR
-			(get-top(cb, x, y) != disabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != enabled)
-		ELSE IF get-cell(cl, x, y) == 4 THEN
-			get-top(cb, x, y) != disabled AND get-right(cb, x, y) != disabled AND get-bottom(cb, x, y) != disabled AND get-left(cb, x, y) != disabled
+	(28) count-sides(cb, x, y) -> count1(get-top(cb, x, y)) + count1(get-right(cb, x, y)) + count1(get-bottom(cb, x, y)) + count1(get-left(cb, x, y))
 
-	(29) all-cell-sides-valid?(cb) ->
+	(29) cell-sides-valid?(cb, x, y) -> count-sides(cb, x, y) == get-cell(get-cl(cb), x, y)
+
+	(30) all-cell-sides-valid?(cb) ->
 		cell-sides-valid?(cb, 0, 0) AND cell-sides-valid?(cb, 1, 0) AND cell-sides-valid?(cb, 2, 0) AND
 		cell-sides-valid?(cb, 0, 1) AND cell-sides-valid?(cb, 1, 1) AND cell-sides-valid?(cb, 2, 1)
 
-	(30) threes-corners-valid?(cb) ->
-		(get-cell(get-cl(cb), 0, 0) != number(3) OR -- TODO: check sides --) AND
-		(get-cell(get-cl(cb), 2, 0) != number(3) OR -- TODO: check sides --) AND
-		(get-cell(get-cl(cb), 0, 1) != number(3) OR -- TODO: check sides --) AND
-		(get-cell(get-cl(cb), 2, 1) != number(3) OR -- TODO: check sides --)
+	(31) threes-corners-valid?(cb) ->
+		(get-cell(get-cl(cb), 0, 0) != three OR -- TODO: check sides --) AND
+		(get-cell(get-cl(cb), 2, 0) != three OR -- TODO: check sides --) AND
+		(get-cell(get-cl(cb), 0, 1) != three OR -- TODO: check sides --) AND
+		(get-cell(get-cl(cb), 2, 1) != three OR -- TODO: check sides --)
 
 	-- TODO: Twos in corners rules?
 
 	-- TODO: Final check that runs all-cell-sides-valid? + rule based checks as is-valid? for the whole board.
-	(31) is-valid?(cb) ->
-		all-cell-sides-valid?(cb)
+	(31) is-valid?(cb) -> all-cell-sides-valid?(cb) AND threes-corners-valid?(cb)
 
 
 -- Valid example 2 for reference
-createBoard(
-	new-cl(
-		number(3), empty,     number(3),
-		empty,     number(3), empty
-	),
-	new-hll(
-		new-hl(enabled,  unknown, enabled),
-		new-hl(enabled,  unknown, enabled),
-		new-hl(disabled, enabled, disabled),
-	),
-	new-vl(
-		new-vl(unknown,  disabled),
-		new-vl(disabled, unknown),
-		new-vl(disabled, unknown),
-		new-vl(enabled,  disabled),
+is-valid?(
+	createBoard(
+		new-cl(
+			three, empty, three,
+			empty, three, empty
+		),
+		new-hll(
+			new-hl(enabled,  unknown, enabled),
+			new-hl(enabled,  unknown, enabled),
+			new-hl(disabled, enabled, disabled),
+		),
+		new-vl(
+			new-vl(unknown,  disabled),
+			new-vl(disabled, unknown),
+			new-vl(disabled, unknown),
+			new-vl(enabled,  disabled),
+		)
 	)
 )
