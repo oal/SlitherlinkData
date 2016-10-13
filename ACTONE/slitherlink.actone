@@ -1,4 +1,4 @@
--- creating simple sorts so we do not have to use nat, and therefore avoid
+-- Creating simple sorts so we do not have to use nat, and therefore avoid
 -- constructors / accessors below being called with out of bounds parameters
 SORT xs
 OPS
@@ -189,23 +189,26 @@ AXIOMS
 		cell-sides-valid?(cb, 0, 1) AND cell-sides-valid?(cb, 1, 1) AND cell-sides-valid?(cb, 2, 1)
 
 	(31) threes-corners-valid?(cb) ->
-		(get-cell(get-cl(cb), 0, 0) != three OR -- TODO: check sides --) AND
-		(get-cell(get-cl(cb), 2, 0) != three OR -- TODO: check sides --) AND
-		(get-cell(get-cl(cb), 0, 1) != three OR -- TODO: check sides --) AND
-		(get-cell(get-cl(cb), 2, 1) != three OR -- TODO: check sides --)
+		(get-cell(get-cl(cb), 0, 0) != 3 OR (get-top(cb, 0, 0) != disabled AND get-left(cb, 0, 0) != disabled)) AND
+		(get-cell(get-cl(cb), 2, 0) != 3 OR (get-top(cb, 2, 0) != disabled AND get-right(cb, 2, 0) != disabled)) AND
+		(get-cell(get-cl(cb), 0, 1) != 3 OR (get-bottom(cb, 0, 1) != disabled AND get-left(cb, 0, 1) != disabled)) AND
+		(get-cell(get-cl(cb), 2, 1) != 3 OR (get-bottom(cb, 2, 1) != disabled AND get-right(cb, 2, 1) != disabled))
 
-	-- TODO: Twos in corners rules?
+	(31) twos-corners-valid?(cb) ->
+		(get-cell(get-cl(cb), 0, 0) != 2 OR (get-left(cb, 0, 1) != disabled AND get-top(cb, 1, 0) != disabled)) AND
+		(get-cell(get-cl(cb), 2, 0) != 2 OR (get-right(cb, 2, 1) != disabled AND get-top(cb, 1, 0) != disabled)) AND
+		(get-cell(get-cl(cb), 0, 1) != 2 OR (get-left(cb, 0, 0) != disabled AND get-bottom(cb, 1, 1) != disabled)) AND
+		(get-cell(get-cl(cb), 2, 1) != 2 OR (get-right(cb, 2, 0) != disabled AND get-bottom(cb, 1, 1) != disabled))
 
-	-- TODO: Final check that runs all-cell-sides-valid? + rule based checks as is-valid? for the whole board.
-	(31) is-valid?(cb) -> all-cell-sides-valid?(cb) AND threes-corners-valid?(cb)
+	(32) is-valid?(cb) -> all-cell-sides-valid?(cb) AND threes-corners-valid?(cb) AND twos-corners-valid?(cb)
 
 
 -- Valid example 2 for reference
 is-valid?(
 	createBoard(
 		new-cl(
-			three, empty, three,
-			empty, three, empty
+			3,     empty, 3,
+			empty, 3,     empty
 		),
 		new-hll(
 			new-hl(enabled,  unknown, enabled),
