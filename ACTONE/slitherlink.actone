@@ -182,7 +182,7 @@ AXIOMS
 
 	(28) count-sides(cb, x, y) -> count1(get-top(cb, x, y)) + count1(get-right(cb, x, y)) + count1(get-bottom(cb, x, y)) + count1(get-left(cb, x, y))
 
-	(29) cell-sides-valid?(cb, x, y) -> count-sides(cb, x, y) == get-cell(get-cl(cb), x, y)
+	(29) cell-sides-valid?(cb, x, y) -> count-sides(cb, x, y) <= get-cell(get-cl(cb), x, y)
 
 	(30) all-cell-sides-valid?(cb) ->
 		cell-sides-valid?(cb, 0, 0) AND cell-sides-valid?(cb, 1, 0) AND cell-sides-valid?(cb, 2, 0) AND
